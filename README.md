@@ -3,39 +3,30 @@
 
 ![teaser](lecun1989.png)
 
-This code tries to reproduce the 1989 Yann LeCun et al. paper: [Backpropagation Applied to Handwritten Zip Code Recognition](http://yann.lecun.com/exdb/publis/pdf/lecun-89e.pdf). To my knowledge this is the earliest real-world application of a neural net trained with backpropagation (now 33 years ago).
+This code tries to reproduce the 1989 Yann LeCun et al. paper: [Backpropagation Applied to Handwritten Zip Code Recognition](http://yann.lecun.com/exdb/publis/pdf/lecun-89e.pdf). This is the earliest real-world application of a neural net trained with backpropagation (now 33 years ago).
 
-#### run
+### Ressult
 
-Since we don't have the exact dataset that was used in the paper, we take MNIST and randomly pick examples from it to generate an approximation of the dataset, which contains only 7291 training and 2007 testing digits, only of size 16x16 pixels (standard MNIST is 28x28).
+- We take MNIST dataset and randomly pick examples from it to generate an approximation of the dataset, which contains only 7291 training and 2007 testing digits, only of size 16x16 pixels (standard MNIST is 28x28).
 
 ```
 $ python prepro.py
-```
-
-Now we can attempt to reproduce the paper. The original network trained for 3 days, but my (Apple Silicon M1) MacBook Air 33 years later chunks through it in about 90 seconds. (non-emulated arm64 but CPU only, I don't believe PyTorch and Apple M1 are best friends ever just yet, but anyway still about 3000X speedup). So now that we've run prepro we can run repro! (haha):
-
-```
 $ python repro.py
 ```
 
-Running this prints (on the 23rd, final pass):
+- **My_Result:** Running this prints (on the 23rd, final pass):
 
-```
-eval: split train. loss 4.073383e-03. error 0.62%. misses: 45
-eval: split test . loss 2.838382e-02. error 4.09%. misses: 82
-```
-
+![alt text](<Screenshot 2024-07-16 061729.png>)
+![alt text](<Screenshot 2024-07-16 061922.png>)
+![alt text](<Screenshot 2024-07-16 062028.png>)
 This is close but not quite the same as what the paper reports. To match the paper exactly we'd expect the following instead:
-
+- **Paper_Report_Result:**
 ```
 eval: split train. loss 2.5e-3. error 0.14%. misses: 10
 eval: split test . loss 1.8e-2. error 5.00%. misses: 102
 ```
 
-I expect that the majority of this discrepancy comes from the training dataset itself. We've only simulated the original dataset using what we have today 33 years later (MNIST). There are a number of other details that are not specified in the paper, so I also had to do some guessing (see notes below). For example, the specific sparse connectivity structure between layers H1 and H2 is not described, the paper just says that the inputs are "chosen according to a scheme that will not be dicussed here". Alternatively, the paper uses a "special version of Newton's algorithm that uses a positive, diagonal approximation of Hessian", but I only used simple SGD in this implementation because it is signficiantly simpler and, according to the paper, "this algorithm is not believed to bring a tremendous increase in learning speed". Anyway, we are getting numbers on similar orders of magnitude...
-
-#### notes
+### Implenetation_Description:
 
 My notes from the paper:
 
