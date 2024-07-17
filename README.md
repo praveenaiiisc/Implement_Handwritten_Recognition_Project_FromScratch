@@ -5,7 +5,7 @@
 
 This code tries to reproduce the 1989 Yann LeCun et al. paper: [Backpropagation Applied to Handwritten Zip Code Recognition](http://yann.lecun.com/exdb/publis/pdf/lecun-89e.pdf). This is the earliest real-world application of a neural net trained with backpropagation (now 33 years ago).
 
-### Ressult
+## Ressult
 
 - We take MNIST dataset and randomly pick examples from it to generate an approximation of the dataset, which contains only 7291 training and 2007 testing digits, only of size 16x16 pixels (standard MNIST is 28x28).
 
@@ -19,14 +19,14 @@ $ python repro.py
 ![alt text](<Screenshot 2024-07-16 061729.png>)
 ![alt text](<Screenshot 2024-07-16 061922.png>)
 ![alt text](<Screenshot 2024-07-16 062028.png>)
-This is close but not quite the same as what the paper reports. To match the paper exactly we'd expect the following instead:
+This result is close to whatever mention in paper reports result.
 - **Paper_Report_Result:**
 ```
 eval: split train. loss 2.5e-3. error 0.14%. misses: 10
 eval: split test . loss 1.8e-2. error 5.00%. misses: 102
 ```
 
-### Implenetation_Description:
+## Implenetation_Description:
 
 My notes from the paper:
 
@@ -64,26 +64,7 @@ My notes from the paper:
     - throughput of 30 digits/s on normalized digits
 - "we have successfully applied backpropagation learning to a large, real-world task"
 
-**Open questions:**
-
-- The 12 -> 8 connections from H2 to H1 are not described in this paper... I will assume a sensible block structure connectivity
-- Not clear what exactly is the "MSE loss". Was the scaling factor of 1/2 included to simplify the gradient calculation? Will assume no.
-- What is the learning rate? I will run a sweep to determine the best one manually.
-- Was any learning rate decay used? Not mentioned, I am assuming no.
-- Was any weight decay used? not mentioned, assuming no.
-- Is there a bug in the pdf where in weight init the fan in should have a square root? The pdf's formatting is a bit messed up. Assuming yes.
-- The paper does not say, but what exactly are the targets? Assuming they are +1/-1 for pos/neg, as the output units have tanh too...
-
-One more notes on the weight init conundrum. Eg the "Kaiming init" is:
-
-```
-a = gain * sqrt(3 / fan_in)
-~U(-a, a)
-```
-
-For tanh neurons the recommended gain is 5/3. So therefore we would have `a = sqrt(3) * 5 / 3 *  sqrt(1 / fan_in) = 2.89 * sqrt(1 / fan_in)`, which is close to what the paper does (gain 2.4). So if the original work in fact did use a sqrt and the pdf is just formatted wrong, then the (modern) Kaiming init and the originally used init are pretty close.
-
-#### todos
+- For tanh neurons the recommended gain is 5/3. So therefore we would have `a = sqrt(3) * 5 / 3 *  sqrt(1 / fan_in) = 2.89 * sqrt(1 / fan_in)`, which is close to what the paper does (gain 2.4). So if the original work in fact did use a sqrt and the pdf is just formatted wrong, then the (modern) Kaiming init and the originally used init are pretty close.
 
 - modernize the network using knowledge from 33 years of time travel.
-- include my janky hyperparameter sweeping code for tuning the learning rate potentially
+
